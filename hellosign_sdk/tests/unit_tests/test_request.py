@@ -107,6 +107,7 @@ class Request(TestCase):
                                     headers={'Custom-Header': 'Nothing'},
                                     path_or_file=out)
         self.assertEqual(response, True)
+        out.close()
 
     def test_get_file_https(self):
         request = HSRequest(self.client.auth)
@@ -130,3 +131,4 @@ class Request(TestCase):
                                     headers={'Custom-Header': 'Nothing'},
                                     path_or_file=out)
         self.assertEqual(response, True)
+        out.close()
