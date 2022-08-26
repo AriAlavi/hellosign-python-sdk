@@ -1865,7 +1865,7 @@ class HSClient(object):
             A HTTPBasicAuth or HSAccessTokenAuth object
 
         '''
-
+        
         if access_token_type and access_token:
             return HSAccessTokenAuth(access_token, access_token_type)
         elif api_key:
