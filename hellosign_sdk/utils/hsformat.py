@@ -149,6 +149,10 @@ class HSFormat(object):
         return {output_name: json.dumps(listed_params)}
 
     @staticmethod
+    def format_field_options(listed_params):
+        return {"field_options" : json.dumps(listed_params)}
+
+    @staticmethod
     def strip_none_values(dictionary):
         if dictionary:
             return dict((key, value) for (key, value) in dictionary.items() if value)

@@ -38,6 +38,9 @@ class TestEmbedded(BaseTestCase):
         cc_email_addresses = ["receiver@example.com"]
         subject = "Test embedded signature request"
         message = "This is the message"
+        field_options = {
+            "date_format" : "YYYY - MM - DD"
+        }
 
         # Create request
         try:
@@ -48,7 +51,8 @@ class TestEmbedded(BaseTestCase):
                                                                         title=subject, 
                                                                         message=message, 
                                                                         signers=signers, 
-                                                                        cc_email_addresses=cc_email_addresses)
+                                                                        cc_email_addresses=cc_email_addresses,
+                                                                        field_options=field_options)
             self.assertTrue(isinstance(emb_sig_req, SignatureRequest))
             self.assertEqual(len(emb_sig_req.signatures), 1)
         except HSException as e:

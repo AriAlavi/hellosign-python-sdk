@@ -112,7 +112,10 @@ class TestSignatureRequest(BaseTestCase):
                                                                     cc_email_addresses=cc_email_addresses, 
                                                                     use_text_tags=True,
                                                                     metadata=metadata,
-                                                                    allow_decline=True)
+                                                                    allow_decline=True,
+                                                                    field_options={
+                                                                        "date_format" : "YYYY - MM - DD"
+                                                                    })
         else:
             sig_req = self.client.send_signature_request_embedded(test_mode=True, 
                                                                     client_id=self.client_id, 
@@ -123,7 +126,10 @@ class TestSignatureRequest(BaseTestCase):
                                                                     signers=signers, 
                                                                     cc_email_addresses=cc_email_addresses,
                                                                     metadata=metadata,
-                                                                    allow_decline=True)
+                                                                    allow_decline=True,
+                                                                    field_options={
+                                                                        "date_format" : "YYYY - MM - DD"
+                                                                    })
 
         self.assertEqual(isinstance(sig_req, SignatureRequest), True)
         self.assertEqual(sig_req.title, title)
@@ -259,21 +265,24 @@ class TestSignatureRequest(BaseTestCase):
 
     def test_signature_request_send_with_template(self):
         ''' Test sending signature requests from templates '''
+        acct = self.client.account
+        if not acct.is_paid_hs:
+            print("WARNING: Skipping test_signature_request_send_with_template because it requires a paid API plan")
+        else:
+            # Send signature request with one template
+            sig_req1 = self._send_test_signature_request(use_template=True)
 
-        # Send signature request with one template
-        sig_req1 = self._send_test_signature_request(use_template=True)
+            # Send signature request with two templates
+            sig_req2 = self._send_test_signature_request(use_multi_templates=True)
 
-        # Send signature request with two templates
-        sig_req2 = self._send_test_signature_request(use_multi_templates=True)
-
-        # Cancel signature requests
-        try:
-            sleep(59)  # wait for SIGNATURE_REQUEST_SENT
-            self.client.cancel_signature_request(sig_req1.signature_request_id)
-            sleep(2)
-            self.client.cancel_signature_request(sig_req2.signature_request_id)
-        except HSException as e:
-            self.fail(e.message)
+            # Cancel signature requests
+            try:
+                sleep(59)  # wait for SIGNATURE_REQUEST_SENT
+                self.client.cancel_signature_request(sig_req1.signature_request_id)
+                sleep(2)
+                self.client.cancel_signature_request(sig_req2.signature_request_id)
+            except HSException as e:
+                self.fail(e.message)
 
     def test_embedded_signature_request_send(self):
         ''' Test sending embedded signature requests '''
@@ -305,7 +314,7 @@ class TestSignatureRequest(BaseTestCase):
             "signature_id": "78caf2a1d01cd39cea2bc1cbb340dac3",
             "api_id": "80c678_3",
             "name": "DateSigned",
-            "value": "09\/01\/2012",
+            "value": "2012\/09\/01",
             "type": "text"
         }
 
@@ -335,7 +344,10 @@ class TestSignatureRequest(BaseTestCase):
             "details_url": "https:\/\/staging.hellosign.com\/home\/manage?locate=fa5c8a0b0f492d768749333ad6fcc214c111e967",
             "requester_email_address": "me@hellosign.com",
             "signatures": [sig_data],
-            "cc_email_addresses": []
+            "cc_email_addresses": [],
+            "field_options": {
+                "date_format" : "YYYY - MM - DD"
+            }
         }
         sig_req = SignatureRequest(sig_req_data)
 

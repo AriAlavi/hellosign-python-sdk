@@ -102,11 +102,12 @@ class Request(TestCase):
                                     path_or_file='')
         self.assertEqual(response, False)
 
-        out = io.StringIO()
+        out = io.BytesIO()
         response = request.get_file(url='http://httpbin.org/robots.txt',
                                     headers={'Custom-Header': 'Nothing'},
                                     path_or_file=out)
         self.assertEqual(response, True)
+        out.close()
 
     def test_get_file_https(self):
         request = HSRequest(self.client.auth)
@@ -125,8 +126,9 @@ class Request(TestCase):
                                     path_or_file='')
         self.assertEqual(response, False)
 
-        out = io.StringIO()
-        response = request.get_file(url='http://httpbin.org/robots.txt',
+        out = io.BytesIO()
+        response = request.get_file(url='https://httpbin.org/robots.txt',
                                     headers={'Custom-Header': 'Nothing'},
                                     path_or_file=out)
         self.assertEqual(response, True)
+        out.close()
